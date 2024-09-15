@@ -53,9 +53,10 @@ class Game:
         
         if self.player.is_host: # the host can decide to either continue or stop the game
           self.decide_if_to_continue()
-          continue
-        else:
-          self.player.wait_for_restart() # the guest await for host decision             
+        
+        continue
+        # else:
+        #   self.player.wait_for_restart() # the guest await for host decision             
       
       # this will be used to makes each player see his paddle in the bottom and with his color and the oponent paddle in the top (the server does not see or store the position of the player in the y axis)
       if self.player.is_host:

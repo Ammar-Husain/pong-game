@@ -32,5 +32,5 @@ class Player:
   def wait_for_restart(self):
     while True:
       signal = pickle.loads(self.client.recv(1080))
-      if signal == "r":
+      if signal == "r"*39:
         return
