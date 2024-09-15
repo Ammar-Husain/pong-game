@@ -22,15 +22,14 @@ class Player:
     self.client.sendall(pickle.dumps((self.is_host, direction)))
     
   def get_data(self):
-    data = self.client.recv(1080)
+    data = self.client.recv(1080) # the number was choosed carefully because it is multiple of 54 the server packet size
+    
+    if data == "":
+      return "sc" # stands for "server closed"
+    
     try:
       return pickle.loads(data)
+    
     except Exception as e: # incomplete packet was received
       print("a packet has been lost")
       return False
-        
-  def wait_for_restart(self):
-    while True:
-      signal = pickle.loads(self.client.recv(1080))
-      if signal == "r"*39:
-        return

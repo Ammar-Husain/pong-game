@@ -20,6 +20,7 @@ class Game:
   
   def start(self):
     self.set_pygame()
+    self.set_pygame()
     message = "Enjoy!!!"
     # get player option (host or guest) and connect it to the server (server run on host device)
     while True:
@@ -40,8 +41,8 @@ class Game:
       
       if not data: # this was temporary solution for the proplem of incomplete packets received from the server
         continue
-    
-      if len(data) == 3: # len == 3 means regular state update
+      
+      elif len(data) == 3: # len == 3 means regular state update for ball and players
         ball_x, ball_y, players_pos = data
 
       elif data[0] == "c": # a message means the ball hit something (player or sidewall)
@@ -55,9 +56,10 @@ class Game:
           self.decide_if_to_continue()
         
         continue
-        # else:
-        #   self.player.wait_for_restart() # the guest await for host decision             
       
+      elif data == "sc": # means the server has been closed
+        self.start()
+        
       # this will be used to makes each player see his paddle in the bottom and with his color and the oponent paddle in the top (the server does not see or store the position of the player in the y axis)
       if self.player.is_host:
         my_pos = players_pos[0]
@@ -67,7 +69,6 @@ class Game:
         op_pos = players_pos[0]
       
       # create players paddles rects from the received data
-      
       my_paddle = pygame.Rect(my_pos*self.s_w, self.s_h-self.player_height-self.padding, self.player_width, self.player_height)
       op_paddle = pygame.Rect(op_pos*self.s_w, self.padding, self.player_width, self.player_height)
       
@@ -88,11 +89,13 @@ class Game:
       
   #initialize vedio and sound systems
   def set_pygame(self):
-    pygame.init()
-    self.screen = pygame.display.set_mode((self.s_w, self.s_h))
-    self.clock = pygame.time.Clock()
-    pygame.mixer.init()
-    self.sound = pygame.mixer.Sound("beeb.wav")    
+    # the next condition is to insure this is the first call to the method because self.start method is reused to restart the game for the guest when the host leave and close the server instead of kicking him out 
+    if not self.screen:
+      pygame.init()
+      self.screen = pygame.display.set_mode((self.s_w, self.s_h))
+      self.clock = pygame.time.Clock()
+      pygame.mixer.init()
+      self.sound = pygame.mixer.Sound("beeb.wav")    
 
   #the first scrren in the game, designed to take player option
   def is_host(self, message):
@@ -169,7 +172,7 @@ class Game:
           
         sleep(1/60)
         
-    except pygame.error: # when pygame closed
+    except (pygame.error, BrokenPipeError): # when pygame closed
       return
       
   # display the result of the round and the session
@@ -202,6 +205,11 @@ class Game:
 
   #get host decision (to continue or to exit)
   def decide_if_to_continue(self):
+    # I am forced to put the next lines here rather than in server.py (i.e where round ends is detected in update_ball method) because I did so I was losing the message in about 20% of the instances because of the server delay another message being waiting in the queue and got send and the "1" or "2" message is blocked because the server being already stopped before that so I am insuring the server stops only after insuring the result message has been send to the host, May be I could do it more cleaner but who cares!!
+    
+    if self.player.is_host:
+      self.player.server.is_running = False
+      
     while True:
       for event in pygame.event.get():
         if event.type == pygame.QUIT: self.exit()

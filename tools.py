@@ -15,22 +15,28 @@ def get_screen_dimensions():
     monitor = get_monitors()[0]
     return monitor.width, monitor.height
   
-  except common.ScreenInfoError: # the game is running in an android device
+  except common.ScreenInfoError: # the game is propaply running in an android device
     pass
   
-  print("Because you are using a stupid android phone I need you to manually enter your screen width and height, you can get it from your device setting")
+  print("\n\n\nIt seems like you are propaply running the game in an android phone because we were not able to detect your screen resolution informations, So we need you to manually enter your screen resolution values (width and height in pixels), you can get it from your device setting")
   
   while True:
     try:
       screen_width = int(input("Width:\n"))
-      screen_height = int(input("Height:\n"))
-      store = input("Do you want me to store the width and height values ?\nEnter Y or y for yes any other thing for no\n To delete them you will need to manually delete dimensions.py\n")
-      
-      if store == "Y" or store == "y":
-        f = open("dimensions.py", "w")
-        f.write(f"screen_width = {screen_width}\nscreen_height = {screen_height}")
-        f.close()
-      
-      return screen_width, screen_height
     except ValueError:
-      print("Enter a number stupid!!!, now we have to start again")
+      print("Width must be a number, Try again.")
+  
+  while True:
+    try:
+      screen_height = int(input("Height:\n"))
+    except ValueError:
+      print("height must be a number, Try again.")
+            
+  store = input("Do you want us to store your screen resolutions values ?\nEnter Y or y for \"Yes\" any other thing for \"No\"\nTo delete them you will need to manually delete dimensions.py file in the working directory\n")
+  
+  if store == "Y" or store == "y":
+    f = open("dimensions.py", "w")
+    f.write(f"screen_width = {screen_width}\nscreen_height = {screen_height}")
+    f.close()
+  
+  return screen_width, screen_height

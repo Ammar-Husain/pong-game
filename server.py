@@ -54,11 +54,17 @@ class Server:
 
   def handle_client(self, conn):
     while True:
-      data = pickle.loads(conn.recv(340))
-      if self.is_running:
-        lock.acquire()
-        self.update_players(data)
-        lock.release()
+      try:
+        data = pickle.loads(conn.recv(340))
+      
+      except OSError: # means the server has been closed
+        break
+      
+      else:
+        if self.is_running:
+          lock.acquire()
+          self.update_players(data)
+          lock.release()
   
 
   def update_players(self, data):
@@ -95,12 +101,10 @@ class Server:
     elif self.ball_y + BALL_RADIUS >= 1:
       #player 2 win
       message = "2"*39 # mean player 2 win the round
-      self.is_running = False
     #ball flies away
     elif self.ball_y <= BALL_RADIUS:
       #player 1 win
       message = "1"*39 # mean player 1 win the round
-      self.is_running = False
     
     self.ball_x += self.ball_dx
     self.ball_y += self.ball_dy
@@ -116,19 +120,19 @@ class Server:
 
   def send_data(self):
     while True:
-      print(self.is_running)
+      
       if self.is_running:
         lock.acquire()
         ball_message = self.update_ball()
         
         if ball_message:
-          ball_message = pickle.dumps(ball_message)
+          decoded_ball_message = pickle.dumps(ball_message)
           for player_conn in self.conns:
             try:
-              player_conn.sendall(ball_message)
+              player_conn.sendall(decoded_ball_message)
             except:
               self.conns.remove(player_conn)
-        
+              
         data = pickle.dumps((self.ball_x, self.ball_y, self.players))
         for player_conn in self.conns:
           try:
@@ -138,7 +142,6 @@ class Server:
         
         lock.release()
       
-        print("data sended")
       sleep(1/60)
       
   def restart(self):
@@ -149,15 +152,11 @@ class Server:
       self.ball_dx = 0
       self.ball_dy = choice([1, -1]) * BALL_SPEED[1]
       self.is_running = True
-      if len(self.conns) > 1:
-        self.conns[1].sendall(pickle.dumps("r"*39))
-      print("Server restarted")
       # lock.release()
      
   def close_server(self):
-    print("The server is closing")
     for conn in self.conns:
       conn.close()
-    # self.server.shutdown(socket.SHUT_RDWR)
+    
     self.server.close()
     print("Server has been closed succefully")
