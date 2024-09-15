@@ -22,9 +22,12 @@ class Player:
     self.client.sendall(pickle.dumps((self.is_host, direction)))
     
   def get_data(self):
-    data = self.client.recv(1080) # the number was choosed carefully because it is multiple of 54 the server packet size
-    
-    if data == "":
+    try:
+      data = self.client.recv(1080) # the number was choosed carefully because it is multiple of 54 the server packet size
+    except (ConnectionAbortedError, ConnectionResetError): # the server has been closed suddenly.
+      return "sc" # stands for "server closed"
+      
+    if data == b'': # the server has been closed gracefully
       return "sc" # stands for "server closed"
     
     try:

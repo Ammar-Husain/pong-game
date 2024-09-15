@@ -19,7 +19,7 @@ class Game:
     self.sound = None
   
   def start(self):
-    self.set_pygame()
+    print("game started")
     self.set_pygame()
     message = "Enjoy!!!"
     # get player option (host or guest) and connect it to the server (server run on host device)
@@ -42,19 +42,18 @@ class Game:
       if not data: # this was temporary solution for the proplem of incomplete packets received from the server
         continue
       
-      elif len(data) == 3: # len == 3 means regular state update for ball and players
+      elif type(data) == tuple: # means regular state update for ball and players
         ball_x, ball_y, players_pos = data
 
-      elif data[0] == "c": # a message means the ball hit something (player or sidewall)
+      elif data == "c"*39: # a message means the ball hit something (player or sidewall)
         self.sound.play()
         continue
       
-      elif data[0] == "1" or data[0] == "2": # messages indicate a round end and a player win (player1 or player2)
+      elif data == "1"*39 or data == "2"*39: # messages indicate a round end and a player win (player1 or player2)
         self.show_result(data[0]) #show result screen
         
         if self.player.is_host: # the host can decide to either continue or stop the game
           self.decide_if_to_continue()
-        
         continue
       
       elif data == "sc": # means the server has been closed
@@ -225,7 +224,7 @@ class Game:
  
   # to exit the game
   def exit(self):
-    if self.player.is_host and self.player.server: #close the server if the player is the host
+    if self.player and self.player.is_host and self.player.server: #close the server if the player is the host
       self.player.server.close_server()
     
     pygame.quit() # close pygame

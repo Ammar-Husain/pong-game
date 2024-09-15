@@ -23,12 +23,14 @@ def get_screen_dimensions():
   while True:
     try:
       screen_width = int(input("Width:\n"))
+      break
     except ValueError:
       print("Width must be a number, Try again.")
   
   while True:
     try:
       screen_height = int(input("Height:\n"))
+      break
     except ValueError:
       print("height must be a number, Try again.")
             
