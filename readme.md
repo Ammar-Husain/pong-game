@@ -26,5 +26,5 @@ visit python [download page](https://www.python.org/downloads/) from python offi
 #### Note:
 if you are in android and termux, pygame library will fail to install directly, check my tutorial [here](https://dev.to/ammar-hussein/setup-pygame-in-termux-g9b) about how to get it downloaded.
 
--once the dependencies have been installed succefully start the game by running:
+- once the dependencies have been installed succefully start the game by running:
 `python play.py`

@@ -1,6 +1,7 @@
+import pygame, sys
 from threading import Thread
 from time import sleep
-import pygame, sys
+
 from player import Player
 from tools import get_host_ip_address
 
@@ -18,7 +19,7 @@ class Game:
     self.clock = None
     self.player = None
     self.sound = None
-  
+    
   def start(self):
     print("game started")
     self.set_pygame()
@@ -97,7 +98,7 @@ class Game:
       pygame.mixer.init()
       self.sound = pygame.mixer.Sound("beeb.wav")    
 
-  #the first scrren in the game, designed to take player option
+  #the first scrren in the game, designed to take player role option
   def is_host(self, message):
     font = pygame.font.Font(None, self.s_w//40)
     
@@ -124,7 +125,7 @@ class Game:
     while True:
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
-          if self.player.is_host: self.exit()
+          self.exit()
           
         elif event.type == pygame.KEYDOWN:
           if event.unicode == "h" or event.unicode == "H": # H stands for "Host"
@@ -154,20 +155,20 @@ class Game:
     else:
       return True, "Let's GO!!!"
 
-  #get inputs (right and left movements) from the user and send them to the server
-  #it works in a seperate thread
+  #get inputs (right and left movements) from the user keyboard and send them to the server
+  #it works on a seperate thread
   def send_moves(self):
     try:
       while True:
         for event in pygame.event.get():
           if event.type == pygame.QUIT: self.exit()
         
-        keys = list(pygame.key.get_pressed())
+        keys = pygame.key.get_pressed()
         
-        if keys[79]:
+        if keys[pygame.K_RIGHT]:
           self.player.move(1)
 
-        elif keys[80]:
+        elif keys[pygame.K_LEFT]:
           self.player.move(-1)
           
         sleep(1/60)
@@ -175,7 +176,7 @@ class Game:
     except (pygame.error, BrokenPipeError): # when pygame closed
       return
       
-  # display the result of the round and the session
+  # display the result of the round
   def show_result(self, player):
     result = "Player1 Win!!" if player == "1" else "Player2 Win!!"
     
