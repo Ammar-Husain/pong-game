@@ -18,13 +18,19 @@ visit python [download page](https://www.python.org/downloads/) from python offi
 
 
 - Clone this repository by running this code in your terminal:
-`git clone https://github.com/Ammar-Husain/pong-game.git`
+```
+git clone https://github.com/Ammar-Husain/pong-game.git
+```
 
 - Once the repo has been cloned, move to game directory and install the required dependencies by running:
-`pip install -r requirements.txt`
+```
+pip install -r requirements.txt
+```
 
 #### Note:
 if you are in android and termux, pygame library will fail to install directly, check my tutorial [here](https://dev.to/ammar-hussein/setup-pygame-in-termux-g9b) about how to get it downloaded.
 
 - once the dependencies have been installed succefully start the game by running:
-`python play.py`
+```
+python play.py
+```
