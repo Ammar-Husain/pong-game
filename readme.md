@@ -28,7 +28,7 @@ pip install -r requirements.txt
 ```
 
 #### Note:
-if you are in android and termux, pygame library will fail to install directly, check my tutorial [here](https://dev.to/ammar-hussein/setup-pygame-in-termux-g9b) about how to get it downloaded.
+if you are in android and termux, pygame library will fail to install directly, check my tutorial [here](https://dev.to/ammar-hussein/setup-pygame-in-termux-g9b) about how to set it up.
 
 - once the dependencies have been installed succefully start the game by running:
 ```
