@@ -1,5 +1,7 @@
-from screeninfo import get_monitors, common
 
+
+
+from screeninfo import get_monitors, common
 def get_screen_dimensions():
   
   try:
@@ -42,3 +44,19 @@ def get_screen_dimensions():
     f.close()
   
   return screen_width, screen_height
+  
+  
+  
+import netifaces as ni
+def get_host_ip_address():
+  interfaces = ni.interfaces()
+  for interface in interfaces:
+    addrs = ni.ifaddresses(interface)
+    
+    if ni.AF_INET in addrs:
+      ip = addrs[ni.AF_INET][0]['addr']
+      
+      if ip != '127.0.0.1':  # Skip localhost
+        return ip
+  
+  return None

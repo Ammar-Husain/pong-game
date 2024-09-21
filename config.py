@@ -2,7 +2,7 @@ import math
 from tools import get_screen_dimensions
 
 
-screen_width, screen_height = get_screen_dimensions() # width and height are in pixels so they depend on screen resolution not actual 
+screen_width, screen_height = get_screen_dimensions() # width and height are in pixels so they depend on screen resolution not actual dimensions
 
 # YOU CAN EDIT THESE:
 SCREEN_WIDTH = screen_width*9//10
@@ -14,11 +14,10 @@ BALL_COLOR=(0, 255, 0)
 PLAYER_PADDLE_COLOR=(255, 0, 0)
 OP_PADDLE_COLOR=(0, 0, 255)
 
-PORT = 7893
 
+PORT = 7893 # make sure it is the same in both host and guest devices or the game will not work
 
 # DO NOT TOUCH THESE!!!
-HOST_IP = "192.168.43.1" # it works for most devices never touch it if the game is working for you
 
 BALL_RADIUS = 1/70                # will be multiplied by SCREEN_HEIGHT
 BALL_SPEED = 1/100, 1/100         # will be multiplied by SCREEN_WIDTH, SCREEN_HEIGHT

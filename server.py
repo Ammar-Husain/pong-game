@@ -48,11 +48,10 @@ class Server:
       else:
         self.conns.append(conn)
         # self.players.append(INITIAL_POS_LEFT_DOWN_CORNER) #when allowing more than 2
-        thread = threading.Thread(target=self.handle_client, args=[conn])
+        thread = threading.Thread(target=self.handle_player_input, args=[conn])
         thread.start()
   
-
-  def handle_client(self, conn):
+  def handle_player_input(self, conn):
     while True:
       try:
         data = pickle.loads(conn.recv(340))
@@ -66,7 +65,6 @@ class Server:
           self.update_players(data)
           lock.release()
   
-
   def update_players(self, data):
     direction = 1 if data[1] > 0 else (0 if not data[1] else -1)
     
@@ -75,7 +73,6 @@ class Server:
     
     elif not data[0] and 0 <= self.players[1] + PLAYER_SPEED*direction <= 1 - PLAYER_WIDTH:
       self.players[1] += PLAYER_SPEED*direction
-
 
   def update_ball(self):
     message = ""   

@@ -2,8 +2,9 @@ from threading import Thread
 from time import sleep
 import pygame, sys
 from player import Player
+from tools import get_host_ip_address
 
-from config import BG_COLOR, TEXT_COLOR, BALL_RADIUS, BALL_COLOR, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_PADDLE_COLOR, OP_PADDLE_COLOR, PADDING, HOST_IP
+from config import BG_COLOR, TEXT_COLOR, BALL_RADIUS, BALL_COLOR, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_PADDLE_COLOR, OP_PADDLE_COLOR, PADDING
 
 class Game:
   def __init__(self, s_w, s_h):
@@ -27,7 +28,7 @@ class Game:
       is_player_host = self.is_host(message)
       self.player = Player(is_player_host)
       
-      host_ip = HOST_IP
+      host_ip = get_host_ip_address()
       connected, message = self.connect_player(host_ip)
       if connected: break
     
@@ -98,7 +99,7 @@ class Game:
 
   #the first scrren in the game, designed to take player option
   def is_host(self, message):
-    font = pygame.font.Font(None, self.s_w//30)
+    font = pygame.font.Font(None, self.s_w//40)
     
     host_option = font.render("To be the host of the game open Hotspot then press 'h'", True, TEXT_COLOR)
     guest_option = font.render("To be the guest of the game connect to host then press 'g'", True, TEXT_COLOR)
@@ -136,12 +137,12 @@ class Game:
   def connect_player(self, host_ip): 
     try:
       self.player.connect(host_ip)
-    except OSError as e:
+    except (OSError, TypeError) as e:
       print(f"Failed to connect to {host_ip}")
       print(e)
       
       if self.player.is_host:
-        message = "Make sure the wifi Hotspot is opened in your device."
+        message = "Make sure the wifi Hotspot is opened in your device, If the issue persists restart wifi Hotspot and relaunch the app"
         print(message)
       
       else:
